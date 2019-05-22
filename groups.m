@@ -266,7 +266,8 @@ doall := function(n,t, thecut)
           thecut, thecut, ncc, gens>;
 end function;
 
-incall := function(n,t, low, high)
+// Compute siblings in higher degrees
+incsib := function(n,t, low, high)
   printf "Doing group %o, %o\n", n, t;
   g := tg(n,t);
   printf "Getting low index,";
@@ -279,6 +280,15 @@ incall := function(n,t, low, high)
   return <n, t, atwin, sibl(g,s), high>;
 end function;
 
+// Compute resolvents in higher degrees, have to start over
+incres := function(n,t, high)
+  printf "Doing group %o, %o\n", n, t;
+  g := tg(n,t);
+  printf "Getting low index,";
+  s:=LowIndexSubgroups(g,<2,high>);
+  return <n, t, res2(g,s), high>;
+end function;
+
 
 domany := function(l,h, thecut)
   return <<doall(n,t, thecut) : t in [1..NumberOfTransitiveGroups(n)]>: n in [l..h]>;
@@ -286,5 +296,5 @@ end function;
 
 // Only use this if we have everything below lowcut
 incmany := function(deg, lowcut, highcut)
-  return <incall(deg, t, lowcut, highcut) : t in [1..NumberOfTransitiveGroups(deg)]>;
+  return <incsib(deg, t, lowcut, highcut) : t in [1..NumberOfTransitiveGroups(deg)]>;
 end function;
